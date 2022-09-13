@@ -1,0 +1,3 @@
+[submodule "inst/julia/FunctionalMixedEffects.jl"]
+	path = inst/julia/FunctionalMixedEffects.jl
+	url = https://github.com/wzhorton/FunctionalMixedEffects.jl
