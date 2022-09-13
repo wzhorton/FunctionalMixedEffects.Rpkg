@@ -1,11 +1,16 @@
-Package: FunctionalMixedEffects.Rpkg
+Package: FunctionalMixedEffects
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Functional Mixed Effects Modeling via Bayesian Penalized Splines
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: W. Z. Horton
+Maintainer: W. Z. Horton <whorton@ucsc.edu>
+Description: Mixed effects modeling for functional data. Specifically, the
+  package handles functional outcomes being regressed against non-functional
+  covariates. Fixed effects and random effects are handled through the prior
+  structure. The backend is handled through the FunctionalMixedEffects.jl Julia
+  backend code, which also contains more information about the model.
+License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
+Depends: R (>= 3.4.0)
+SystemRequirements: Julia (>= 1.6)
+Imports: JuliaCall
