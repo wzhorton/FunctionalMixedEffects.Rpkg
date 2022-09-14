@@ -105,7 +105,7 @@ mcmc_fme <- function(julia_obj, Yobs, Xfix, Xrand = NULL, p = 20){
     julia_obj$assign(names(arg_list)[i], arg_list[[i]])
   }
 
-  julia_obj$command("chains = mcmc_fme(Yobs, Xfix, Xrand, p, hyps, cfg)")
+  julia_obj$command("chains = mcmc_fme(Yobs, Xfix, Xrand, p, hyps, cfg);")
   invisible(arg_list)
 }
 
@@ -123,14 +123,14 @@ mcmc_fme <- function(julia_obj, Yobs, Xfix, Xrand = NULL, p = 20){
 #' @export
 
 extract_chains_fme <- function(julia_obj){
-  if(~julia$exists("chains")){
+  if(!julia$exists("chains")){
     stop("No chains object found")
   }
   chains <- list()
   chains$sigma <- julia_obj$eval("chains.σ")
   chains$tau <- julia_obj$eval("chains.τ")
   chains$lambda <- julia_obj$eval("chains.λ")
-  chains$Bfix <- julia_objs$eval("chains.Bfix")
+  chains$Bfix <- julia_obj$eval("chains.Bfix")
   chains$Brand <- julia_obj$eval("chains.Brand")
   return(chains)
 }
