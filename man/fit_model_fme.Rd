@@ -14,6 +14,7 @@ fit_model_fme(
   nburn = 5000L,
   nthin = 1L,
   save_random_effects = FALSE,
+  save_theta = FALSE,
   a_sig = 3,
   b_sig = 1,
   a_tau = 3,

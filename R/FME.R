@@ -8,6 +8,8 @@
 #' @param julia_obj Julia environment object from \code{julia_setup}.
 #' @param save_random_effects Logical indicating whether the random effects
 #' chain should be saved. Strict logical is required.
+#' @param save_theta Logical indicating whether the individual coefficients
+#' chain should be saved. Strict logical is required.
 #' @param niter,nburn,nthin MCMC iteration parameters. Strict integers are required.
 #'
 #' @return Invisibly returns list of config variables. The config object \code{cfg}
@@ -15,7 +17,7 @@
 #' @export
 
 set_config_fme <- function(julia_obj, niter = 5000L, nburn = 1000L, nthin = 1L,
-                           save_random_effects = FALSE){
+                           save_random_effects = FALSE, save_theta = FALSE){
   if(!all(is.integer(c(niter, nburn, nthin)))){
     stop("niter, nburn, nthin must all be strict integers
          (i.e. niter=5000L instead of =5000")
@@ -27,7 +29,8 @@ set_config_fme <- function(julia_obj, niter = 5000L, nburn = 1000L, nthin = 1L,
   for(i in seq_along(arg_list)){
     julia_obj$assign(names(arg_list)[i], arg_list[[i]])
   }
-  julia_obj$command("cfg = OutputConfigFME(niter, nburn, nthin, save_random_effects)")
+  julia_obj$command("cfg = OutputConfigFME(niter, nburn, nthin,
+                    save_random_effects, save_theta)")
   invisible(arg_list)
 }
 
@@ -49,7 +52,7 @@ set_config_fme <- function(julia_obj, niter = 5000L, nburn = 1000L, nthin = 1L,
 #' @export
 
 set_hyperparm_fme <- function(julia_obj, a_sig=3, b_sig=1, a_tau=3, b_tau=1,
-                              a_lam=3, b_lam=1, v_fix=1000){
+                              a_lam=3, b_lam=1, v_fix=10000){
   if(!all(is.double(c(a_sig, b_sig, a_tau, b_tau,a_lam, b_lam, v_fix)))){
     stop("hyperparameters must all be strict doubles")
   }
@@ -132,6 +135,7 @@ extract_chains_fme <- function(julia_obj){
   chains$lambda <- julia_obj$eval("chains.λ")
   chains$Bfix <- julia_obj$eval("chains.Bfix")
   chains$Brand <- julia_obj$eval("chains.Brand")
+  chains$Theta <- julia_obj$eval("chains.θ")
   return(chains)
 }
 
@@ -151,10 +155,10 @@ extract_chains_fme <- function(julia_obj){
 
 fit_model_fme <- function(julia_obj, Yobs, Xfix, Xrand = NULL, p = 20L,
                           niter = 15000L, nburn = 5000L, nthin = 1L,
-                          save_random_effects = FALSE, a_sig = 3,
-                          b_sig = 1, a_tau = 3, b_tau = 1, a_lam = 3,
-                          b_lam = 1, v_fix = 1000){
-  set_config_fme(julia_obj, niter, nburn, nthin, save_random_effects)
+                          save_random_effects = FALSE, save_theta = FALSE,
+                          a_sig = 3, b_sig = 1, a_tau = 3, b_tau = 1,
+                          a_lam = 3, b_lam = 1, v_fix = 1000){
+  set_config_fme(julia_obj, niter, nburn, nthin, save_random_effects, save_theta)
   set_hyperparm_fme(julia_obj, a_sig, b_sig, a_tau, b_tau, a_lam, b_lam, v_fix)
   mcmc_fme(julia_obj, Yobs, Xfix, Xrand, p)
   extract_chains_fme(julia_obj)

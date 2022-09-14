@@ -9,7 +9,8 @@ set_config_fme(
   niter = 5000L,
   nburn = 1000L,
   nthin = 1L,
-  save_random_effects = FALSE
+  save_random_effects = FALSE,
+  save_theta = FALSE
 )
 }
 \arguments{
@@ -18,6 +19,9 @@ set_config_fme(
 \item{niter, nburn, nthin}{MCMC iteration parameters. Strict integers are required.}
 
 \item{save_random_effects}{Logical indicating whether the random effects
+chain should be saved. Strict logical is required.}
+
+\item{save_theta}{Logical indicating whether the individual coefficients
 chain should be saved. Strict logical is required.}
 }
 \value{

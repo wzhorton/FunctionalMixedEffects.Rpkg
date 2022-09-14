@@ -12,7 +12,7 @@ set_hyperparm_fme(
   b_tau = 1,
   a_lam = 3,
   b_lam = 1,
-  v_fix = 1000
+  v_fix = 10000
 )
 }
 \arguments{
