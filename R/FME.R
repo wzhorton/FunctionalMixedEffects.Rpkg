@@ -115,7 +115,7 @@ set_data_fme <- function(julia_obj, Yobs, Xfix = NULL, Xrand = NULL, Xcent = NUL
     julia_obj$assign(names(arg_list)[i], arg_list[[i]])
   }
 
-  julia_obj$command("data = DataFME(Y, Xfix, Xrand, Xcent)")
+  julia_obj$command("data = DataFME(Yobs, Xfix, Xrand, Xcent)")
   invisible(arg_list)
 }
 
