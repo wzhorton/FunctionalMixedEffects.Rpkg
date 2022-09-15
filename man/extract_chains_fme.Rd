@@ -12,7 +12,8 @@ also run the \code{FME} MCMC code.}
 }
 \value{
 List of chain objects. Note the special unicode characters in the
-Julia object are renamed using standard characters.
+Julia object are renamed using standard characters. Also note that parameters
+associated with NULL data objects will be returned as empty arrays.
 }
 \description{
 Custom structs like the returned chains object don't return properly in R.

@@ -6,6 +6,7 @@
 \usage{
 set_config_fme(
   julia_obj,
+  p = 20L,
   niter = 5000L,
   nburn = 1000L,
   nthin = 1L,
@@ -14,12 +15,14 @@ set_config_fme(
 )
 }
 \arguments{
-\item{julia_obj}{Julia environment object from \code{julia_setup}.}
+\item{julia_obj}{Julia environment object from \code{julia_setup}.
+#' @param p number of spline coefficients. Must be strict integer (5L instead of 5).}
 
 \item{niter, nburn, nthin}{MCMC iteration parameters. Strict integers are required.}
 
 \item{save_random_effects}{Logical indicating whether the random effects
-chain should be saved. Strict logical is required.}
+chain should be saved. Strict logical is required. Note the centered effects
+will be saved even if this is false}
 
 \item{save_theta}{Logical indicating whether the individual coefficients
 chain should be saved. Strict logical is required.}

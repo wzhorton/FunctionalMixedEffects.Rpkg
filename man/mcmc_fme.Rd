@@ -4,27 +4,16 @@
 \alias{mcmc_fme}
 \title{Functional mixed effects MCMC}
 \usage{
-mcmc_fme(julia_obj, Yobs, Xfix, Xrand = NULL, p = 20)
+mcmc_fme(julia_obj)
 }
 \arguments{
 \item{julia_obj}{Julia environment from \code{julia_setup}.}
-
-\item{Yobs}{matrix containing curves/functions as columns.}
-
-\item{Xfix}{matrix containing fixed effect covariates, with individuals contained
-as columns and variables as rows (reverse of usual design matrices).}
-
-\item{Xrand}{matrix containing fixed effect covariates, with individuals contained
-as columns and variables as rows (reverse of usual design matrices). Can be
-set to \code{NULL} to perform functional regression without random effects.}
-
-\item{p}{number of spline coefficients. Must be strict integer (5L instead of 5).}
 }
 \value{
-Invisibly returns list of argument values. The resulting object \code{chains}
+Invisibly returns NULL. The resulting object \code{chains}
 is saved in the \code{julia_obj} environment.
 }
 \description{
-Pass the final model parameters and fit the model to data. \code{HyperParameter}
-and \code{OutputConfig} objects must be defined.
+Fit the functional mixed model to data. \code{HyperParameter}, \code{Data},
+and \code{OutputConfig} objects must be defined in the Julia environment..
 }

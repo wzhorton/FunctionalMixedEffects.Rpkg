@@ -12,7 +12,8 @@ set_hyperparm_fme(
   b_tau = 1,
   a_lam = 3,
   b_lam = 1,
-  v_fix = 10000
+  v_fix = 1000,
+  v_cent = 1000
 )
 }
 \arguments{
@@ -24,7 +25,7 @@ set_hyperparm_fme(
 
 \item{a_lam, b_lam}{lambda priors. Must have \code{a > 2}}
 
-\item{v_fix}{fixed effect prior variance.}
+\item{v_fix, v_cent}{fixed and centered effects prior variance.}
 }
 \value{
 Invisibly returns list of hyperparameter variables. The hyperparameter
@@ -32,6 +33,6 @@ object \code{hyps} is saved in the \code{julia_obj} environment.
 }
 \description{
 The argument names and values are save to the \code{julia_obj}
-environment, then the hyperparameter object is built. THe values must
+environment, then the hyperparameter object is built. The values must
 all return \code{TRUE} to \code{is.double}.
 }

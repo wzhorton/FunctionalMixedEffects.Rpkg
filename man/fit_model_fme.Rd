@@ -7,8 +7,9 @@
 fit_model_fme(
   julia_obj,
   Yobs,
-  Xfix,
+  Xfix = NULL,
   Xrand = NULL,
+  Xcent = NULL,
   p = 20L,
   niter = 15000L,
   nburn = 5000L,
@@ -21,17 +22,18 @@ fit_model_fme(
   b_tau = 1,
   a_lam = 3,
   b_lam = 1,
-  v_fix = 1000
+  v_fix = 1000,
+  v_cent = 1000
 )
 }
 \arguments{
 \item{julia_obj}{A Julia environment from \code{julia_setup}.}
 
-\item{Yobs, Xfix, Xrand, p}{see documentation for \code{mcmc_fme}}
+\item{Yobs, Xfix, Xrand, Xcent}{see documentation for \code{set_data_fme}}
 
-\item{niter, nburn, nthin, save_random_effects}{see documentation for \code{set_config_fme}}
+\item{p, niter, nburn, nthin, save_random_effects}{see documentation for \code{set_config_fme}}
 
-\item{a_sig, b_sig, a_tau, b_tau, a_lam, b_lam, v_fix}{see documentation for \code{set_hyperparm_fme}}
+\item{a_sig, b_sig, a_tau, b_tau, a_lam, b_lam, v_fix, v_cent}{see documentation for \code{set_hyperparm_fme}}
 }
 \value{
 MCMC chains object, see documentation for \code{mcmc_fme}.
