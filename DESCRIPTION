@@ -1,7 +1,7 @@
 Package: FunctionalMixedEffects
 Type: Package
 Title: Functional Mixed Effects Modeling via Bayesian Penalized Splines
-Version: 0.1.0
+Version: 1.0.1
 Author: W. Z. Horton
 Maintainer: W. Z. Horton <whorton@ucsc.edu>
 Description: Mixed effects modeling for functional data. Specifically, the
