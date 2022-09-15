@@ -18,10 +18,10 @@ fit_model_fme(
   save_theta = FALSE,
   a_sig = 3,
   b_sig = 1,
-  a_tau = 100,
-  b_tau = 30,
-  a_lam = 3,
-  b_lam = 1,
+  a_tau = 3,
+  b_tau = 1,
+  a_lam = 100,
+  b_lam = 30,
   v_fix = 1000,
   v_cent = 1000
 )
