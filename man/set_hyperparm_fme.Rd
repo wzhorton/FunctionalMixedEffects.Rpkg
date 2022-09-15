@@ -10,8 +10,8 @@ set_hyperparm_fme(
   b_sig = 1,
   a_tau = 3,
   b_tau = 1,
-  a_lam = 3,
-  b_lam = 1,
+  a_lam = 100,
+  b_lam = 30,
   v_fix = 1000,
   v_cent = 1000
 )
@@ -23,7 +23,9 @@ set_hyperparm_fme(
 
 \item{a_tau, b_tau}{tau priors. Must have \code{a > 2}}
 
-\item{a_lam, b_lam}{lambda priors. Must have \code{a > 2}}
+\item{a_lam, b_lam}{lambda priors. Must have \code{a > 2}. A much stronger
+prior is recommended as lambda tends to be difficult to estimate and
+contributes to slower mixing.}
 
 \item{v_fix, v_cent}{fixed and centered effects prior variance.}
 }

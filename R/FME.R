@@ -46,7 +46,9 @@ set_config_fme <- function(julia_obj, p=20L, niter = 5000L, nburn = 1000L, nthin
 #' @param julia_obj Julia environment object from \code{julia_setup}.
 #' @param a_sig,b_sig sigma priors. Must have \code{a > 2}
 #' @param a_tau,b_tau tau priors. Must have \code{a > 2}
-#' @param a_lam,b_lam lambda priors. Must have \code{a > 2}
+#' @param a_lam,b_lam lambda priors. Must have \code{a > 2}. A much stronger
+#' prior is recommended as lambda tends to be difficult to estimate and
+#' contributes to slower mixing.
 #' @param v_fix,v_cent fixed and centered effects prior variance.
 #'
 #' @return Invisibly returns list of hyperparameter variables. The hyperparameter
@@ -54,7 +56,7 @@ set_config_fme <- function(julia_obj, p=20L, niter = 5000L, nburn = 1000L, nthin
 #' @export
 
 set_hyperparm_fme <- function(julia_obj, a_sig=3, b_sig=1, a_tau=3, b_tau=1,
-                              a_lam=3, b_lam=1, v_fix=1000, v_cent=1000){
+                              a_lam=100, b_lam=30, v_fix=1000, v_cent=1000){
   if(!all(sapply(c(a_sig, b_sig, a_tau, b_tau,a_lam, b_lam, v_fix, v_cent), is.double))){
     stop("hyperparameters must all be strict doubles")
   }
