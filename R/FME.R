@@ -195,7 +195,7 @@ extract_chains_fme <- function(julia_obj){
 fit_model_fme <- function(julia_obj, Yobs, Xfix = NULL, Xrand = NULL, Xcent = NULL,
                           p = 20L, niter = 15000L, nburn = 5000L, nthin = 1L,
                           save_random_effects = FALSE, save_theta = FALSE,
-                          a_sig = 3, b_sig = 1, a_tau = 3, b_tau = 1,
+                          a_sig = 3, b_sig = 1, a_tau = 100, b_tau = 30,
                           a_lam = 3, b_lam = 1, v_fix = 1000, v_cent=1000){
   set_config_fme(julia_obj, p, niter, nburn, nthin, save_random_effects, save_theta)
   set_hyperparm_fme(julia_obj, a_sig, b_sig, a_tau, b_tau, a_lam, b_lam, v_fix, v_cent)
