@@ -70,7 +70,7 @@
 # - Aggregated; all groups contained in one file
 
 # Specify name and path of waveform file
-waveform_path <- "~/Desktop/tester/curves.csv"#"path/to/waveformfile.csv"
+waveform_path <- "path/to/waveformfile.csv"
 
 #----------------------------#
 # Subject level variables #
@@ -86,7 +86,7 @@ waveform_path <- "~/Desktop/tester/curves.csv"#"path/to/waveformfile.csv"
 
 # Specify name and path of individual variable file.
 # Set to NULL if not including.
-subj_path <- "~/Desktop/tester/subvar.csv"#"path/to/subjvars.csv"
+subj_path <- "path/to/subjvars.csv"
 
 # Provide the file column names for group labels and ID values.
 # If path is NULL, these are ignored. Set to NULL if otherwise not present.
@@ -105,7 +105,7 @@ id_column_subj <- "Sub" #required
 
 # Specify name and path of trial variable file.
 # Set to NULL if not including.
-trial_path <- "~/Desktop/tester/trials.csv"#"path/to/trialvars.csv"
+trial_path <- "path/to/trialvars.csv"
 
 # Provide file column name for ID values and trial numbers.
 # If path is NULL, these are ignored. Set to NULL if otherwise not present
@@ -129,9 +129,8 @@ output_comparisons <- TRUE
 # Set the comparisons in the list below if output_comparisons is FALSE, this
 # will be ignored and does not need to be modified.
 comparison_list <- list(
-  c("G2","G1")#,
-  #c("group3","group1"),
-  #c("group3","control")
+  c("group3","group1"),
+  c("group2","control")
 )
 
 
@@ -150,17 +149,15 @@ comparison_list <- list(
 # this list with correctly matching names. Note that "avg" can be used to
 # automatically compute the sample average.
 baselines_subj <- list(
-  #weight = 80.5,
-  #height = "avg
-  X1 = 0
+  weight = 80.5,
+  height = "avg"
 )
 
 # Provide the trial-level baselines (not including ID or trial) in this list
 # with correctly matching names.
 baselines_trial <- list(
-  #time = "avg",
-  #hope = 0
-  txvar = "avg"
+  time = "avg",
+  hope = 0
 )
 
 
@@ -174,7 +171,7 @@ baselines_trial <- list(
 # adjusted to account for the repeated measures structure.
 
 # Set the repeated measures indicator to either TRUE or FALSE
-repeated_measures <- TRUE#FALSE
+repeated_measures <- FALSE
 
 
 #-------------------------------------------------------------------------------
@@ -182,7 +179,7 @@ repeated_measures <- TRUE#FALSE
 #-------------------------------------------------------------------------------
 
 # Provide both the folder path and a common name to prefix to each output file.
-output_folder_path <- "~/Desktop/tester/out"#"path/to/folder"
+output_folder_path <- "path/to/folder"
 output_prefix <- "VGRF"
 
 # Indicate whether sig-region output should be saved. Note that group averages
@@ -459,7 +456,7 @@ if(!is.null(subj_path) || !is.null(trial_path)){
 }
 
 
-#-- Compute and Save Difference Effects
+#-- Compute and Save Difference Effects --#
 if(output_comparisons){
   for(i in 1:length(comparison_list)){
     grp1 <- comparison_list[[i]][1]

@@ -10,7 +10,7 @@ file there contains more in-depth information about the model construction and s
 Package installation can be done using the `devtools` package:`devtools::install_github("wzhorton/FunctionalMixedEffects.Rpkg")`
 
 Note that although the GitHub repository name contains `.Rpkg`, the package itself is named `FunctionalMixedEffects` (i.e. no `.Rpkg` and 
-is properly loaded by `library(FunctionalMixedEffects)`.
+is properly loaded by `library(FunctionalMixedEffects)`).
 
 ---
 ## Update Information
