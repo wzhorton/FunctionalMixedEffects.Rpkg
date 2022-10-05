@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.1.0
+# Version 1.2.0
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -49,6 +49,19 @@
 # Significant regions
 # - Separate CSV file for each analysis above
 # - Contains significant region boundaries and max value
+
+
+#-------------------------------------------------------------------------------
+# Julia Installation #
+#-------------------------------------------------------------------------------
+
+# The Julia backend used by this package is fast, easy to maintain, and cross
+# platform compatible. This script can automatically install and configure Julia
+# if no installation is found.
+
+# If you have a custom Julia setup, set this to FALSE to prevent accidentally
+# installing a duplicate version. TRUE is recommended otherwise.
+install_julia_if_not_found <- TRUE
 
 #-------------------------------------------------------------------------------
 # Data Loading Details #
@@ -119,20 +132,21 @@ group_column_trial <- "Grp"
 #-------------------------------------------------------------------------------
 
 # Along with the group analysis, the model will also output inference for
-# specific group comparisons. Each pair is supplied as a vector of the form
-# c("A","B"), which will estimate the "A minus B" difference curve. The
-# group names must match those found in the subject variable file.
+# specific group comparisons, as well as aggregate comparisons. Each comparison
+# is composed of two super groups (groups of groups) and ultimately a difference
+# curve between groups is computed. Note that the group names must match those
+# found in the subject variable file.
 
 # Indicate whether comparisons should be computed and saved. Set TRUE or FALSE.
 output_comparisons <- TRUE
 
-# Set the comparisons in the list below if output_comparisons is FALSE, this
-# will be ignored and does not need to be modified.
+# Set the comparisons in the list below, including a name to use for saving
+# results. If output_comparisons is FALSE, this will be ignored and does not
+# need to be modified.
 comparison_list <- list(
-  c("group3","group1"),
-  c("group2","control")
+  list(c("G1T1"), c("G2T1"), "G1T1-minus-G2T1"),
+  list(c("G1T1","G1T2"), c("G2T1","G2T2"), "G1-minus-G2")
 )
-
 
 #-------------------------------------------------------------------------------
 # Covariate Baseline Values #
@@ -162,7 +176,7 @@ baselines_trial <- list(
 
 
 #-------------------------------------------------------------------------------
-# Include Repeated Measures (Random Intercepts)
+# Include Repeated Measures (Random Intercepts) #
 #-------------------------------------------------------------------------------
 
 # The mixed effects structure of the package allows for incorporating
@@ -407,7 +421,7 @@ mcmc_iterations <- 25000L
 mcmc_burnin <- as.integer(round(mcmc_iterations/10))
 
 if(!exists("julia")){
-  julia <- setup_julia(install_julia = FALSE)
+  julia <- setup_julia(install_julia = install_julia_if_not_found)
 }
 
 chains <- fit_model_fme(julia, curves, Xfix, Xrand, Xcen, p = num_spline_bases,
@@ -459,17 +473,19 @@ if(!is.null(subj_path) || !is.null(trial_path)){
 #-- Compute and Save Difference Effects --#
 if(output_comparisons){
   for(i in 1:length(comparison_list)){
-    grp1 <- comparison_list[[i]][1]
-    grp1_ind <- which(rownames(Xfix) == grp1)
-    grp1_bchain <- H%*%chains$Bfix[,grp1_ind,]
+    grps1 <- comparison_list[[i]][1]
+    grp1_inds <- sapply(grps1, function(g) which(rownames(Xfix) == g))
+    grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,], c(1,3), mean)
     grp1_sd <- apply(grp1_bchain, 1, sd)
+    n1 <- sum(colSums(grp_design[,grps1]))
 
-    grp2 <- comparison_list[[i]][2]
-    grp2_ind <- which(rownames(Xfix) == grp2)
-    grp2_bchain <- H%*%chains$Bfix[,grp2_ind,]
+    grps2 <- comparison_list[[i]][2]
+    grp2_inds <- sapply(grps2, function(g) which(rownames(Xfix) == g))
+    grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,], c(1,3), mean)
     grp2_sd <- apply(grp2_bchain, 1, sd)
+    n2 <- sum(colSums(grp_design[,grps2]))
 
-    ns <- colSums(grp_design[,c(grp1,grp2)])
+    ns <- c(n1,n2)
 
     diff_bchain <- grp1_bchain - grp2_bchain
     diff_mean <- rowMeans(diff_bchain)
@@ -481,7 +497,7 @@ if(output_comparisons){
     }))
 
     out_diff <- cbind(diff_mean, diff_sd, diff_low, diff_up, es)
-    write.csv(out_diff, paste0(output_prefix,"-", grp1, "-minus-", grp2,
+    write.csv(out_diff, paste0(output_prefix,"-", comparison_list[[i]][3],
                              "-DiffMean.csv"))
     if(output_sig_regions){
       sig_areas <- extract_sig_regions(out_diff)
@@ -493,7 +509,7 @@ if(output_comparisons){
           out_diff[max_ind,5:8]
         })))
       }
-      write.csv(sig_out, paste0(output_prefix,"-", grp1, "-minus-", grp2,
+      write.csv(sig_out, paste0(output_prefix,"-", comparison_list[[i]][3],
                                  "-DiffMean-Areas.csv"), row.names = FALSE)
     }
   }
