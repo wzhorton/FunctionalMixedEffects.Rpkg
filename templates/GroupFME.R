@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.2.0
+# Version 1.2.1
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -313,6 +313,10 @@ if(!is.null(subj_path)){
     subj_covs[,group_column_subj] <- NULL
   }
 
+  if(ncol(subj_covs) == 0){
+    abort("No other covariates found in covariate file")
+  }
+
   # Baseline processing
   subj_cov_labels <- colnames(subj_covs)
   if(!setequal(names(baselines_subj), subj_cov_labels)){
@@ -473,17 +477,17 @@ if(!is.null(subj_path) || !is.null(trial_path)){
 #-- Compute and Save Difference Effects --#
 if(output_comparisons){
   for(i in 1:length(comparison_list)){
-    grps1 <- comparison_list[[i]][1]
+    grps1 <- comparison_list[[i]][[1]]
     grp1_inds <- sapply(grps1, function(g) which(rownames(Xfix) == g))
-    grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,], c(1,3), mean)
+    grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,,drop=FALSE], c(1,3), mean)
     grp1_sd <- apply(grp1_bchain, 1, sd)
-    n1 <- sum(colSums(grp_design[,grps1]))
+    n1 <- sum(grp_design[,grps1])
 
-    grps2 <- comparison_list[[i]][2]
+    grps2 <- comparison_list[[i]][[2]]
     grp2_inds <- sapply(grps2, function(g) which(rownames(Xfix) == g))
-    grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,], c(1,3), mean)
+    grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,,drop=FALSE], c(1,3), mean)
     grp2_sd <- apply(grp2_bchain, 1, sd)
-    n2 <- sum(colSums(grp_design[,grps2]))
+    n2 <- sum(grp_design[,grps2])
 
     ns <- c(n1,n2)
 
