@@ -387,6 +387,14 @@ if(!is.null(trial_path)){
 }
 
 
+#-- Extra Input Validation --#
+if(output_comparisons){
+   if(length(comparison_list != 3)){
+      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
+   }
+}
+
+
 #-- Construct Design Matrices --#
 grp_design <- setNames(data.frame(matrix(as.numeric(model.matrix(~-1+grp_curves)),
                                   ncol = length(unique(grp_curves)))), levels(as.factor(grp_curves)))
