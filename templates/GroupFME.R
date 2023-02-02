@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.2.1
+# Version 1.2.2
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -98,7 +98,7 @@ waveform_path <- "path/to/waveformfile.csv"
 # - First row should contain variable names (no spaces)
 
 # Specify name and path of individual variable file.
-# Set to NULL if not including.
+# Set to NULL if not including, or comment out.
 subj_path <- "path/to/subjvars.csv"
 
 # Provide the file column names for group labels and ID values.
@@ -117,7 +117,7 @@ id_column_subj <- "Sub" #required
 # - Trial number, ID, and group may be supplied, but will be removed
 
 # Specify name and path of trial variable file.
-# Set to NULL if not including.
+# Set to NULL if not including, or comment out.
 trial_path <- "path/to/trialvars.csv"
 
 # Provide file column name for ID values and trial numbers.
@@ -286,7 +286,7 @@ if(any(is.na(curves))) {
 
 
 #-- Load subject variable data --#
-if(!is.null(subj_path)){
+if(exists("subj_path") && !is.null(subj_path)){
   validate(subj_covs <- read.csv(subj_path, stringsAsFactors=F),
            "Individual variable file failed to load.")
 
@@ -334,7 +334,7 @@ if(!is.null(subj_path)){
 
 
 #-- Load trial variable data --#
-if(!is.null(trial_path)){
+if(exists("trial_path") && !is.null(trial_path)){
   validate(trial_covs <- read.csv(trial_path, stringsAsFactors=F),
            "Trial level variable file failed to load.")
 
@@ -463,7 +463,7 @@ for(g in 1:ngrp){ #group effects are first
 
 
 #-- Compute and Save Remaining Covariate Effects --#
-if(!is.null(subj_path) || !is.null(trial_path)){
+if((exists("subj_path") && !is.null(subj_path)) || (exists("trial_path") && !is.null(trial_path))){
   for(cc in (ngrp+1):nrow(Xfix)){
     cc_bchain <- H%*%chains$Bfix[,cc,]
     cc_mean <- rowMeans(cc_bchain)
