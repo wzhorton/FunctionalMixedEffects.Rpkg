@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.2.2
+# Version 1.3.0
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -416,9 +416,21 @@ if(!is.null(subj_path)){
 Xfix <- t(Xfix) #transpose for model compatibility
 
 if(repeated_measures){
-  Xrand <- as.matrix(id_design) %*% rbind(diag(ncol(id_design)-1),-1) #sum constraint
-  Xrand <- t(Xrand) #transpose for model compatibility
-  Xcen <- matrix(1, ncol = nrow(Xrand)) #unneeded marginal term
+  if(all(sapply(split(grp_curves, id_curves), function(v) length(unique(v))) == 1)){ # check for subject-group nesting
+    # Implement nested sum constraints
+    grouped_ids <- lapply(split(id_curves, grp_curves), function(l) unique(l))
+    Xrand <- as.matrix(id_design)
+    for(ids in grouped_ids){
+      inds <- match(ids, colnames(Xrand))
+      Xrand[Xrand[,inds[1]] == 1, inds] <- -1
+      Xrand <- Xrand[,-inds[1]]
+    }
+    Xrand <- t(Xrand) #transpose for model compatibility
+    Xcen <- matrix(1, ncol = nrow(Xrand)) #default marginal term
+  } else {
+    abort("Non-nested subjects not yet implemented. Automatic sum constraints were not determined.")
+  }
+
 } else {
   Xrand <- NULL
   Xcen <- NULL
