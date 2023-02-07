@@ -1,7 +1,7 @@
 Package: FunctionalMixedEffects
 Type: Package
 Title: Functional Mixed Effects Modeling via Bayesian Penalized Splines
-Version: 1.2.0
+Version: 1.2.1
 Author: W. Z. Horton
 Maintainer: W. Z. Horton <whorton@ucsc.edu>
 Description: Mixed effects modeling for functional data. Specifically, the
@@ -14,4 +14,4 @@ Encoding: UTF-8
 Depends: R (>= 3.4.0)
 SystemRequirements: Julia (>= 1.6)
 Imports: JuliaCall
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2

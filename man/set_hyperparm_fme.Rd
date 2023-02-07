@@ -7,9 +7,9 @@
 set_hyperparm_fme(
   julia_obj,
   a_sig = 3,
-  b_sig = 1,
+  b_sig = 0.001,
   a_tau = 3,
-  b_tau = 1,
+  b_tau = 0.001,
   a_lam = 100,
   b_lam = 30,
   v_fix = 1000,
