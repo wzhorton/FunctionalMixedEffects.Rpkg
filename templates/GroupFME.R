@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.3.0
+# Version 1.3.1
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -500,13 +500,13 @@ if(output_comparisons){
     grps1 <- comparison_list[[i]][[1]]
     grp1_inds <- sapply(grps1, function(g) which(rownames(Xfix) == g))
     grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,,drop=FALSE], c(1,3), mean)
-    grp1_sd <- apply(grp1_bchain, 1, sd)
+    grp1_sd <- mean(sqrt(chains$tau))
     n1 <- sum(grp_design[,grps1])
 
     grps2 <- comparison_list[[i]][[2]]
     grp2_inds <- sapply(grps2, function(g) which(rownames(Xfix) == g))
     grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,,drop=FALSE], c(1,3), mean)
-    grp2_sd <- apply(grp2_bchain, 1, sd)
+    grp2_sd <- mean(sqrt(chains$tau))
     n2 <- sum(grp_design[,grps2])
 
     ns <- c(n1,n2)
