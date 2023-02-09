@@ -517,7 +517,7 @@ if(output_comparisons){
     diff_low <- apply(diff_bchain, 1, function(r) quantile(r, 0.025))
     diff_up <- apply(diff_bchain, 1, function(r) quantile(r, 0.975))
     es <- t(sapply(seq_along(diff_mean), function(j){
-        cohend(diff_mean[j], ns, c(grp1_sd[j],grp2_sd[j]))
+        cohend(diff_mean[j], ns, c(grp1_sd,grp2_sd))
     }))
 
     out_diff <- cbind(diff_mean, diff_sd, diff_low, diff_up, es)
