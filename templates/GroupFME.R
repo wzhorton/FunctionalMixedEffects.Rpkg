@@ -529,7 +529,7 @@ if(output_comparisons){
         sig_out <- cbind(sig_areas, matrix(NA, nrow = 1, ncol = 4,
                dimnames = list(NULL, c("eff_size","std_err","es_lower","es_upper"))))
       } else {
-        sig_out <- cbind(sig_areas,t(sapply(sig_areas[3], function(max_ind){
+        sig_out <- cbind(sig_areas,t(sapply(sig_areas[,3], function(max_ind){
           out_diff[max_ind,5:8]
         })))
       }
