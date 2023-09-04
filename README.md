@@ -1,7 +1,7 @@
 # FunctionalMixedEffects.Rpkg
 
 `FunctionalMixedEffects` is an R package designed to perform linear mixed effect regression on functional response variables. It 
-functions mainly as a wrapper for the [FunctionalMixedEffects.jl](github.com/wzhorton/FunctionalMixedEffects.jl) julia package. The README 
+functions mainly as a wrapper for the [FunctionalMixedEffects.jl](https://github.com/wzhorton/FunctionalMixedEffects.jl) julia package. The README 
 file there contains more in-depth information about the model construction and sampling scheme. Pre-configured scripts can be found under the `templates` folder.
 
 ---
