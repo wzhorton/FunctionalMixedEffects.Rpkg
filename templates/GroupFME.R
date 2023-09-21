@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.3.1
+# Version 1.4.0
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -500,13 +500,17 @@ if(output_comparisons){
     grps1 <- comparison_list[[i]][[1]]
     grp1_inds <- sapply(grps1, function(g) which(rownames(Xfix) == g))
     grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,,drop=FALSE], c(1,3), mean)
-    grp1_sd <- mean(sqrt(chains$tau))
+    es1_subset <- curves[,as.logical(colSums(Xfix[grp1_inds,,drop=FALSE]))]
+    es1_mean <- rowMeans(es1_subset)
+    es1_sd <- apply(es1_subset, 1, sd)
     n1 <- sum(grp_design[,grps1])
 
     grps2 <- comparison_list[[i]][[2]]
     grp2_inds <- sapply(grps2, function(g) which(rownames(Xfix) == g))
     grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,,drop=FALSE], c(1,3), mean)
-    grp2_sd <- mean(sqrt(chains$tau))
+    es2_subset <- curves[,as.logical(colSums(Xfix[grp2_inds,,drop=FALSE]))]
+    es2_mean <- rowMeans(es2_subset)
+    es2_sd <- apply(es2_subset, 1, sd)
     n2 <- sum(grp_design[,grps2])
 
     ns <- c(n1,n2)
