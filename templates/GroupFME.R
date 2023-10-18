@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.4.0
+# Version 1.4.1
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -388,11 +388,11 @@ if(exists("trial_path") && !is.null(trial_path)){
 
 
 #-- Extra Input Validation --#
-if(output_comparisons){
-   if(length(comparison_list != 3)){
-      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
-   }
-}
+#if(output_comparisons){
+#   if(length(comparison_list) != 3){
+#      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
+#   }
+#}
 
 
 #-- Construct Design Matrices --#
