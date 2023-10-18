@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.4.1
+# Version 1.4.2
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -521,7 +521,7 @@ if(output_comparisons){
     diff_low <- apply(diff_bchain, 1, function(r) quantile(r, 0.025))
     diff_up <- apply(diff_bchain, 1, function(r) quantile(r, 0.975))
     es <- t(sapply(seq_along(diff_mean), function(j){
-        cohend(diff_mean[j], ns, c(grp1_sd,grp2_sd))
+        cohend(es1_mean[j] - es2_mean[j], ns, c(es1_sd[j],es2_sd[j]))
     }))
 
     out_diff <- cbind(diff_mean, diff_sd, diff_low, diff_up, es)
