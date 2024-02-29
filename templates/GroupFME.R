@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.3.0
+# Version 1.4.2
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -388,11 +388,11 @@ if(exists("trial_path") && !is.null(trial_path)){
 
 
 #-- Extra Input Validation --#
-if(output_comparisons){
-   if(length(comparison_list != 3)){
-      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
-   }
-}
+#if(output_comparisons){
+#   if(length(comparison_list) != 3){
+#      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
+#   }
+#}
 
 
 #-- Construct Design Matrices --#
@@ -500,13 +500,17 @@ if(output_comparisons){
     grps1 <- comparison_list[[i]][[1]]
     grp1_inds <- sapply(grps1, function(g) which(rownames(Xfix) == g))
     grp1_bchain <- H%*%apply(chains$Bfix[,grp1_inds,,drop=FALSE], c(1,3), mean)
-    grp1_sd <- apply(grp1_bchain, 1, sd)
+    es1_subset <- curves[,as.logical(colSums(Xfix[grp1_inds,,drop=FALSE]))]
+    es1_mean <- rowMeans(es1_subset)
+    es1_sd <- apply(es1_subset, 1, sd)
     n1 <- sum(grp_design[,grps1])
 
     grps2 <- comparison_list[[i]][[2]]
     grp2_inds <- sapply(grps2, function(g) which(rownames(Xfix) == g))
     grp2_bchain <- H%*%apply(chains$Bfix[,grp2_inds,,drop=FALSE], c(1,3), mean)
-    grp2_sd <- apply(grp2_bchain, 1, sd)
+    es2_subset <- curves[,as.logical(colSums(Xfix[grp2_inds,,drop=FALSE]))]
+    es2_mean <- rowMeans(es2_subset)
+    es2_sd <- apply(es2_subset, 1, sd)
     n2 <- sum(grp_design[,grps2])
 
     ns <- c(n1,n2)
@@ -517,7 +521,7 @@ if(output_comparisons){
     diff_low <- apply(diff_bchain, 1, function(r) quantile(r, 0.025))
     diff_up <- apply(diff_bchain, 1, function(r) quantile(r, 0.975))
     es <- t(sapply(seq_along(diff_mean), function(j){
-        cohend(diff_mean[j], ns, c(grp1_sd[j],grp2_sd[j]))
+        cohend(es1_mean[j] - es2_mean[j], ns, c(es1_sd[j],es2_sd[j]))
     }))
 
     out_diff <- cbind(diff_mean, diff_sd, diff_low, diff_up, es)
@@ -529,7 +533,7 @@ if(output_comparisons){
         sig_out <- cbind(sig_areas, matrix(NA, nrow = 1, ncol = 4,
                dimnames = list(NULL, c("eff_size","std_err","es_lower","es_upper"))))
       } else {
-        sig_out <- cbind(sig_areas,t(sapply(sig_areas[3], function(max_ind){
+        sig_out <- cbind(sig_areas,t(sapply(sig_areas[,3], function(max_ind){
           out_diff[max_ind,5:8]
         })))
       }
