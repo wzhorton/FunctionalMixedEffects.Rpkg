@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.4.2
+# Version 1.4.3
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -300,6 +300,9 @@ if(exists("subj_path") && !is.null(subj_path)){
   if(!setequal(id_subj,id_curves)){
     abort("Subject covariate IDs do not match waveform IDs")
   }
+  if(any(duplicated(id_subj)){
+    abort("Non-unique subject IDs found in subject covariate file")
+  }
   subj_covs[,id_column_subj] <- NULL
 
   if(!is.null(group_column_subj)){
@@ -388,11 +391,13 @@ if(exists("trial_path") && !is.null(trial_path)){
 
 
 #-- Extra Input Validation --#
-#if(output_comparisons){
-#   if(length(comparison_list) != 3){
-#      abort("Comparison list appears malformed. Expected 3 list elements: 2 super group vectors and the name.")
-#   }
-#}
+if(output_comparisons){
+  for(comp in comparison_list){
+    if(length(comp) != 3){
+      abort("A comparison list item appears malformed. Expected format: list(c(...),c(...),'...')")
+    }
+  }
+}
 
 
 #-- Construct Design Matrices --#
