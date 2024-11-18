@@ -1,6 +1,6 @@
 #### GroupFME.R ####
 
-# Version 1.4.3
+# Version 1.5.0
 
 # This script is a template script found within the FunctionalMixedEffects
 # package. See github.com/wzhorton/FunctionalMixedEffects.Rpkg for install
@@ -283,7 +283,7 @@ if(typeof(curves) != "double"){
 if(any(is.na(curves))) {
   abort("Missing values found in waveform file.")
 }
-
+curve_scale <- max(abs(curves))
 
 #-- Load subject variable data --#
 if(exists("subj_path") && !is.null(subj_path)){
@@ -421,26 +421,32 @@ if(!is.null(subj_path)){
 Xfix <- t(Xfix) #transpose for model compatibility
 
 if(repeated_measures){
-  if(all(sapply(split(grp_curves, id_curves), function(v) length(unique(v))) == 1)){ # check for subject-group nesting
-    # Implement nested sum constraints
-    grouped_ids <- lapply(split(id_curves, grp_curves), function(l) unique(l))
     Xrand <- as.matrix(id_design)
-    for(ids in grouped_ids){
-      inds <- match(ids, colnames(Xrand))
-      Xrand[Xrand[,inds[1]] == 1, inds] <- -1
-      Xrand <- Xrand[,-inds[1]]
+    grouped_ids <- lapply(split(id_curves, grp_curves), function(l) unique(l))
+    constraint_ids <- vector()
+    for(group_ind in seq_along(grouped_ids)){
+        is_nested <- all(sapply(seq_along(grouped_ids)[-group_ind], function(ind){
+            length(intersect(grouped_ids[[group_ind]],grouped_ids[[ind]])) == 0
+        }))
+        if(is_nested){
+            constraint_ids <- append(constraint_ids, grouped_ids[[group_ind]])
+            col_inds <- match(grouped_ids[[group_ind]], colnames(Xrand))
+            Xrand[Xrand[,col_inds[1]] == 1, col_inds] <- -1
+            Xrand <- Xrand[,-col_inds[1]]
+        }
+    }
+    constraint_ids <- setdiff(id_curves, constraint_ids)
+    if(length(constraint_ids) >= 1){
+        col_inds <- match(constraint_ids, colnames(Xrand))
+        Xrand[Xrand[,col_inds[1]] == 1, col_inds] <- -1
+        Xrand <- Xrand[,-col_inds[1]]
     }
     Xrand <- t(Xrand) #transpose for model compatibility
     Xcen <- matrix(1, ncol = nrow(Xrand)) #default marginal term
-  } else {
-    abort("Non-nested subjects not yet implemented. Automatic sum constraints were not determined.")
-  }
-
 } else {
-  Xrand <- NULL
-  Xcen <- NULL
+    Xrand <- NULL
+    Xcen <- NULL
 }
-
 
 #-- MCMC Model Fit --#
 setwd(output_folder_path)
@@ -453,9 +459,14 @@ if(!exists("julia")){
   julia <- setup_julia(install_julia = install_julia_if_not_found)
 }
 
-chains <- fit_model_fme(julia, curves, Xfix, Xrand, Xcen, p = num_spline_bases,
+chains <- fit_model_fme(julia, curves / curve_scale, Xfix, Xrand, Xcen, p = num_spline_bases,
                         niter = mcmc_iterations, nburn = mcmc_burnin)
-
+chains$sigma <- chains$sigma*curve_scale^2
+chains$tau <- chains$tau*curve_scale^2
+chains$lambda <- chains$lambda*curve_scale^2
+chains$Bfix <- chains$Bfix*curve_scale
+chains$Bcent <- chains$Bcent*curve_scale
+# Theta and Brand are not saved, but would need to be similarly rescaled
 
 #-- Compute and Save Group Effects --#
 ngrp <- ncol(grp_design)
